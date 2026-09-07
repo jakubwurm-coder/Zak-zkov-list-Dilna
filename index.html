@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Servisní požadavek">
+  <title>Servisní požadavek | Vans Centre</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="brand">
+      <div class="brand-mark">VC</div>
+      <div>
+        <div class="brand-name">VANS CENTRE</div>
+        <div class="brand-sub">Servisní požadavek</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <form id="serviceForm">
+        <div class="grid two">
+          <label>
+            <span>Datum</span>
+            <input id="date" type="date" required>
+          </label>
+          <label>
+            <span>Termín dokončení</span>
+            <input id="dueDate" type="date">
+          </label>
+        </div>
+
+        <div class="grid two">
+          <label>
+            <span>Zadal</span>
+            <input id="author" type="text" value="Jakub" autocomplete="name">
+          </label>
+          <label>
+            <span>Číslo klíče <b>*</b></span>
+            <input id="keyNumber" type="text" inputmode="numeric" placeholder="např. 184" required>
+          </label>
+        </div>
+
+        <div class="grid three">
+          <label>
+            <span>SPZ</span>
+            <input id="plate" type="text" autocapitalize="characters" placeholder="volitelné">
+          </label>
+          <label>
+            <span>Motor</span>
+            <input id="engine" type="text" placeholder="volitelné">
+          </label>
+          <label>
+            <span>Výkon (kW)</span>
+            <input id="kw" type="number" inputmode="numeric" placeholder="volitelné">
+          </label>
+        </div>
+
+        <label>
+          <span>Servisní požadavek <b>*</b></span>
+          <textarea id="request" rows="6" placeholder="Např. Vyměnit pravou zadní pneumatiku. Auto stojí před dílnou." required></textarea>
+        </label>
+
+        <label class="photo-picker">
+          <span>Fotografie vozidla / místa</span>
+          <input id="photo" type="file" accept="image/*" capture="environment">
+          <div class="photo-button">Vyfotit / vybrat fotografii</div>
+        </label>
+
+        <div id="previewWrap" class="preview-wrap hidden">
+          <img id="preview" alt="Náhled fotografie">
+          <button id="removePhoto" class="link-btn" type="button">Odebrat fotografii</button>
+        </div>
+
+        <div class="actions">
+          <button id="pdfBtn" class="btn primary" type="button">Vygenerovat PDF</button>
+          <button id="shareBtn" class="btn secondary" type="button">Vygenerovat a sdílet</button>
+        </div>
+
+        <p id="status" class="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <p class="footnote">PDF se vytváří přímo v zařízení. Formulář nic neposílá na server.</p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
