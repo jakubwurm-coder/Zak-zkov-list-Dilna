@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#4a5997">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Servisní požadavek">
-  <title>Servisní požadavek | Vans Centre</title>
+  <meta name="apple-mobile-web-app-title" content="Zakázkový list">
+  <title>Zakázkový list | Vans Centre</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
@@ -16,77 +16,121 @@
   <main class="page">
     <header class="brand">
       <div class="brand-mark">VC</div>
-      <div>
+      <div class="brand-copy">
         <div class="brand-name">VANS CENTRE</div>
-        <div class="brand-sub">Servisní požadavek</div>
+        <div class="brand-sub">Zakázkové listy dílny</div>
       </div>
+      <button id="newBtn" class="btn ghost compact" type="button">Nový list</button>
     </header>
 
     <section class="card">
-      <form id="serviceForm">
-        <div class="grid two">
-          <label>
-            <span>Datum</span>
-            <input id="date" type="date" required>
-          </label>
-          <label>
-            <span>Termín dokončení</span>
-            <input id="dueDate" type="date">
-          </label>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">DÍLNA</div>
+          <h1>Zakázkový list</h1>
         </div>
+        <div id="saveState" class="save-state">Nový</div>
+      </div>
+
+      <form id="serviceForm">
+        <input id="recordId" type="hidden">
 
         <div class="grid two">
+          <label>
+            <span>Datum zadání <b>*</b></span>
+            <input id="date" type="date" required>
+          </label>
           <label>
             <span>Zadal</span>
             <input id="author" type="text" value="Jakub" autocomplete="name">
           </label>
+        </div>
+
+        <div class="grid two">
           <label>
-            <span>Číslo klíče <b>*</b></span>
-            <input id="keyNumber" type="text" inputmode="numeric" placeholder="např. 184" required>
+            <span>Označení vozidla / č. klíče <b>*</b></span>
+            <input id="vehicleKey" type="text" placeholder="např. 184" required>
+          </label>
+          <label>
+            <span>ID vozidla</span>
+            <input id="vehicleId" type="text" placeholder="např. 125 / 2026">
           </label>
         </div>
 
-        <div class="grid three">
+        <div class="grid two">
           <label>
-            <span>SPZ</span>
-            <input id="plate" type="text" autocapitalize="characters" placeholder="volitelné">
+            <span>Vozidlo stojí</span>
+            <input id="vehicleLocation" type="text" placeholder="např. před dílnou">
           </label>
           <label>
-            <span>Motor</span>
-            <input id="engine" type="text" placeholder="volitelné">
+            <span>Klíče</span>
+            <input id="keysLocation" type="text" placeholder="např. recepce / skříňka 3">
+          </label>
+        </div>
+
+        <div class="grid due-grid">
+          <label>
+            <span>Termín dokončení</span>
+            <select id="dueRequired">
+              <option value="ne">Ne</option>
+              <option value="ano">Ano</option>
+            </select>
           </label>
           <label>
-            <span>Výkon (kW)</span>
-            <input id="kw" type="number" inputmode="numeric" placeholder="volitelné">
+            <span>Datum dokončení</span>
+            <input id="dueDate" type="date">
           </label>
         </div>
 
         <label>
-          <span>Servisní požadavek <b>*</b></span>
-          <textarea id="request" rows="6" placeholder="Např. Vyměnit pravou zadní pneumatiku. Auto stojí před dílnou." required></textarea>
+          <span>Popis zakázky <b>*</b></span>
+          <textarea id="request" rows="7" placeholder="Co je potřeba na vozidle udělat…" required></textarea>
         </label>
 
-        <label class="photo-picker">
-          <span>Fotografie vozidla / místa</span>
-          <input id="photo" type="file" accept="image/*" capture="environment">
-          <div class="photo-button">Vyfotit / vybrat fotografii</div>
+        <label>
+          <span>Rozpis provedených prací, seznam nakoupených dílů</span>
+          <textarea id="workDone" rows="8" placeholder="Doplní se během nebo po opravě…"></textarea>
         </label>
+
+        <div class="grid two">
+          <label>
+            <span>Datum dokončení / podpis</span>
+            <input id="finishedAt" type="text" placeholder="např. 8. 9. 2026 / Novák">
+          </label>
+          <label class="photo-picker">
+            <span>Fotografie vozidla / závady</span>
+            <input id="photo" type="file" accept="image/*" capture="environment">
+            <div class="photo-button">Vyfotit / vybrat fotografii</div>
+          </label>
+        </div>
 
         <div id="previewWrap" class="preview-wrap hidden">
           <img id="preview" alt="Náhled fotografie">
           <button id="removePhoto" class="link-btn" type="button">Odebrat fotografii</button>
         </div>
 
-        <div class="actions">
-          <button id="pdfBtn" class="btn primary" type="button">Vygenerovat PDF</button>
-          <button id="shareBtn" class="btn secondary" type="button">Vygenerovat a sdílet</button>
+        <div class="actions primary-actions">
+          <button id="saveBtn" class="btn primary" type="button">Uložit zakázku</button>
+          <button id="pdfBtn" class="btn secondary" type="button">Vytvořit PDF</button>
+          <button id="shareBtn" class="btn secondary" type="button">PDF a sdílet</button>
         </div>
-
         <p id="status" class="status" aria-live="polite"></p>
       </form>
     </section>
 
-    <p class="footnote">PDF se vytváří přímo v zařízení. Formulář nic neposílá na server.</p>
+    <section class="card saved-card">
+      <div class="section-head saved-head">
+        <div>
+          <div class="eyebrow">ULOŽENÉ</div>
+          <h2>Zakázkové listy</h2>
+        </div>
+        <input id="searchSaved" class="search" type="search" placeholder="Hledat klíč, ID, zadal…">
+      </div>
+      <div id="savedList" class="saved-list"></div>
+      <p id="emptySaved" class="empty-state">Zatím tu není žádný uložený zakázkový list.</p>
+    </section>
+
+    <p class="footnote">Zakázky se zatím ukládají přímo do tohoto zařízení. PDF se vytváří lokálně a nic se neposílá na server.</p>
   </main>
 
   <script src="app.js"></script>
